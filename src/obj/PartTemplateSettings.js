@@ -1,0 +1,73 @@
+class PartTemplateSettings {
+  wi;
+  ky;
+  By;
+  Ly;
+  Ty;
+  Dy;
+  Ay;
+  Fy;
+  Iy;
+  Ry;
+  Oy;
+  Ey;
+  Vy;
+  Ny;
+  Cy;
+  Py;
+  My;
+  Xy;
+  zy;
+  Yy;
+  Ky;
+  On;
+  constructor() {
+    this.wi = false;
+    this.ky = null;
+    this.By = null;
+    this.Ly = null;
+    this.Ty = "";
+    this.Dy = null;
+    this.Ay = null;
+    this.Fy = null;
+    this.Iy = "";
+    this.Ry = Size.Qw;
+    this.Oy = null;
+    this.Ey = "";
+    this.Vy = Spot.Default;
+    this.Ny = "";
+    this.Cy = Spot.TopLeft;
+    this.Py = Point.EA;
+    this.My = Point.VA;
+    this.Xy = null;
+    this.zy = 127;
+    this.Yy = Point.BA;
+    this.Ky = "gray";
+    this.On = 4;
+  }
+  copy() {
+    const t = new PartTemplateSettings();
+    t.ky = this.ky;
+    t.By = this.By;
+    t.Ly = this.Ly;
+    t.Ty = this.Ty;
+    t.Dy = this.Dy;
+    t.Ay = this.Ay;
+    t.Fy = this.Fy;
+    t.Iy = this.Iy;
+    t.Ry = this.Ry.T();
+    t.Oy = this.Oy;
+    t.Ey = this.Ey;
+    t.Vy = this.Vy.T();
+    t.Ny = this.Ny;
+    t.Cy = this.Cy.T();
+    t.Py = this.Py.T();
+    t.My = this.My.T();
+    t.Xy = this.Xy;
+    t.zy = this.zy;
+    t.Yy = this.Yy.T();
+    t.Ky = this.Ky;
+    t.On = this.On;
+    return t;
+  }
+}
