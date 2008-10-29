@@ -1,6 +1,6 @@
 /**
  * Interactive Diagrams Library
- * @fileoverview Preludio de la biblioteca IDL (Interactive Diagrams Library).
+ * @fileoverview Preludio de la biblioteca Interactive Diagrams Library (IDL).
  * Este archivo configura el entorno de ejecución detectando el objeto raíz global
  * (window en navegadores, global en Node.js), configura el polyfill para
  * requestAnimationFrame, e inicializa el objeto Debug con utilidades de
@@ -56113,7 +56113,7 @@ idl = {
     WheelMode,
   };
 /**
- * @fileoverview Epílogo de la biblioteca IDL.
+ * @fileoverview Epílogo de la biblioteca Interactive Diagrams Library (IDL).
  * Este archivo cierra la IIFE (expresión de función invocada inmediatamente),
  * registra los nombres de clase en los constructores, exporta el espacio de
  * nombres global `idl`, adjunta advertencias de solo lectura, y configura

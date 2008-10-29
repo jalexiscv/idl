@@ -1,4 +1,4 @@
-# IDL — Interactive Diagrams Library
+# Interactive Diagrams Library (IDL)
 
 Librería JavaScript nativa para diagramas interactivos con renderizado dual **SVG + Canvas**. Sin dependencias externas.
 
@@ -224,6 +224,6 @@ Made with care by **[Jose Alexis Correa Valencia](https://github.com/jalexiscv)*
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-jalexiscv-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/jalexiscv/)
 [![Email](https://img.shields.io/badge/Email-jalexiscv%40gmail.com-EA4335?style=flat-square&logo=gmail)](mailto:jalexiscv@gmail.com)
 
-IDL Free Edition — Copyright &copy; 2023 Jose Alexis Correa Valencia — MIT License
+Interactive Diagrams Library (IDL) Free Edition — Copyright &copy; 2023 Jose Alexis Correa Valencia — MIT License
 
 </div>

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Epílogo de la biblioteca IDL.
+ * @fileoverview Epílogo de la biblioteca Interactive Diagrams Library (IDL).
  * Este archivo cierra la IIFE (expresión de función invocada inmediatamente),
  * registra los nombres de clase en los constructores, exporta el espacio de
  * nombres global `idl`, adjunta advertencias de solo lectura, y configura
