@@ -1,5 +1,7 @@
 # Interactive Diagrams Library (IDL)
 
+> **Español** | [English](docs/readme/README.en.md) | [中文](docs/readme/README.zh.md) | [हिन्दी](docs/readme/README.hi.md) | [العربية](docs/readme/README.ar.md) | [Português](docs/readme/README.pt.md) | [Русский](docs/readme/README.ru.md) | [日本語](docs/readme/README.ja.md) | [Français](docs/readme/README.fr.md) | [Deutsch](docs/readme/README.de.md)
+
 Librería JavaScript nativa para diagramas interactivos con renderizado dual **SVG + Canvas**. Sin dependencias externas.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
