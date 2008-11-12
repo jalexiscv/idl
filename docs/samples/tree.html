@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tree Layout — IDL Samples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+    nav { background: #1a1a2e; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 20px; }
+    nav a { color: #8ab4f8; text-decoration: none; font-size: 13px; }
+    nav h2 { font-size: 16px; font-weight: 500; }
+    #diagramDiv { width: 100%; height: 520px; background: #fff; border-bottom: 1px solid #ddd; }
+    .info { max-width: 800px; margin: 20px auto; padding: 0 20px; }
+    .info pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 12px; }
+    .info h3 { margin-top: 20px; font-size: 15px; }
+    .info p { color: #666; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Samples</a>
+  <h2>Tree Layout</h2>
+</nav>
+<div id="diagramDiv"></div>
+<div class="info">
+  <h3>About this sample</h3>
+  <p>Estructura jerárquica de árbol usando <code>TreeModel</code> y <code>TreeLayout</code>. Los nodos se posicionan automáticamente en capas. El layout se re-ejecuta al hacer cambios.</p>
+  <pre>diagram.layout = new idl.TreeLayout({
+  angle: 90,
+  layerSpacing: 50,
+  nodeSpacing: 20,
+  arrangement: idl.TreeLayout.ArrangementVertical
+});
+
+diagram.model = new idl.TreeModel([
+  { key: 1, text: "CEO" },
+  { key: 2, text: "VP Sales", parent: 1 },
+  { key: 3, text: "VP Engineering", parent: 1 },
+  { key: 4, text: "Sales Manager", parent: 2 },
+  { key: 5, text: "Sales Rep A", parent: 4 },
+  { key: 6, text: "Sales Rep B", parent: 4 },
+  { key: 7, text: "Dev Manager", parent: 3 },
+  { key: 8, text: "Frontend Lead", parent: 7 },
+  { key: 9, text: "Backend Lead", parent: 7 },
+]);</pre>
+</div>
+<script src="../idl.js"></script>
+<script>
+  var diagram = new idl.Diagram("diagramDiv");
+
+  diagram.nodeTemplate = new idl.Node("Spot", { selectionAdorned: true })
+    .add(
+      new idl.Shape("RoundedRectangle", {
+        fill: "#34A853", stroke: "#1E6B34", strokeWidth: 2,
+        width: 130, height: 44, parameter1: 6
+      }),
+      new idl.TextBlock("", {
+        stroke: "white", font: "bold 13px sans-serif", textAlign: "center"
+      }).bind("text", "text")
+    );
+
+  diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
+    .add(new idl.Shape("", { stroke: "#666", strokeWidth: 1.5 }));
+
+  diagram.layout = new idl.TreeLayout({
+    angle: 90,
+    layerSpacing: 50,
+    nodeSpacing: 20,
+    arrangement: idl.TreeLayout.ArrangementVertical
+  });
+
+  diagram.model = new idl.TreeModel([
+    { key: 1, text: "CEO" },
+    { key: 2, text: "VP Sales", parent: 1 },
+    { key: 3, text: "VP Engineering", parent: 1 },
+    { key: 4, text: "Sales Manager", parent: 2 },
+    { key: 5, text: "Sales Rep A", parent: 4 },
+    { key: 6, text: "Sales Rep B", parent: 4 },
+    { key: 7, text: "Dev Manager", parent: 3 },
+    { key: 8, text: "Frontend Lead", parent: 7 },
+    { key: 9, text: "Backend Lead", parent: 7 },
+  ]);
+</script>
+</body>
+</html>
