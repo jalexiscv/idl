@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Node Templates — IDL Samples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+    nav { background: #1a1a2e; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 20px; }
+    nav a { color: #8ab4f8; text-decoration: none; font-size: 13px; }
+    nav h2 { font-size: 16px; font-weight: 500; }
+    #diagramDiv { width: 100%; height: 520px; background: #fff; border-bottom: 1px solid #ddd; }
+    .info { max-width: 800px; margin: 20px auto; padding: 0 20px; }
+    .info pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 12px; }
+    .info h3 { margin-top: 20px; font-size: 15px; }
+    .info p { color: #666; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Samples</a>
+  <h2>Custom Node Templates</h2>
+</nav>
+<div id="diagramDiv"></div>
+<div class="info">
+  <h3>About this sample</h3>
+  <p>Demuestra diferentes templates de nodos usando paneles anidados (Spot, Auto, Table, Vertical). Cada template combina formas, texto e imágenes con data binding a diferentes propiedades del modelo.</p>
+</div>
+<script src="../idl.js"></script>
+<script>
+  var diagram = new idl.Diagram("diagramDiv");
+
+  // Template: database server (Vertical panel with icon + info)
+  diagram.nodeTemplateMap.add("server",
+    new idl.Node("Spot", { selectionAdorned: true })
+      .add(
+        new idl.Shape("RoundedRectangle", {
+          fill: "#2C3E50", stroke: "#1A252F", strokeWidth: 2,
+          width: 150, height: 70, parameter1: 6
+        }),
+        new idl.Panel("Vertical", { alignment: idl.Spot.Left, margin: 10 })
+          .add(
+            new idl.TextBlock("", {
+              font: "bold 13px sans-serif", stroke: "#ECF0F1", margin: 2
+            }).bind("text", "name"),
+            new idl.TextBlock("", {
+              font: "10px sans-serif", stroke: "#BDC3C7", margin: 1
+            }).bind("text", "ip"),
+            new idl.TextBlock("", {
+              font: "10px sans-serif", stroke: "#95A5A6", margin: 1
+            }).bind("text", "status")
+          )
+      )
+  );
+
+  // Template: service (circle with icon)
+  diagram.nodeTemplateMap.add("service",
+    new idl.Node("Spot", { selectionAdorned: true })
+      .add(
+        new idl.Shape("Circle", {
+          width: 70, height: 70, strokeWidth: 3
+        }).bind("fill", "color").bind("stroke", "color"),
+        new idl.TextBlock("", {
+          font: "bold 28px sans-serif", stroke: "white", textAlign: "center"
+        }).bind("text", "icon")
+      )
+  );
+
+  // Template: database table (Table panel)
+  diagram.nodeTemplateMap.add("table",
+    new idl.Node("Auto", { selectionAdorned: true })
+      .add(
+        new idl.Shape("Rectangle", {
+          fill: "white", stroke: "#3498DB", strokeWidth: 2
+        }),
+        new idl.Panel("Table", {
+          defaultRowSeparatorStroke: "#3498DB",
+          defaultColumnSeparatorStroke: "#3498DB",
+          margin: 4
+        })
+          .add(
+            new idl.TextBlock("", {
+              row: 0, column: 0, columnSpan: 2, font: "bold 12px sans-serif",
+              stroke: "white", background: "#3498DB", padding: 4, textAlign: "center"
+            }).bind("text", "name"),
+            new idl.TextBlock("PK", {
+              row: 1, column: 0, font: "10px sans-serif", stroke: "#666", padding: 3
+            }),
+            new idl.TextBlock("", {
+              row: 1, column: 1, font: "10px sans-serif", stroke: "#333", padding: 3
+            }).bind("text", "pk"),
+            new idl.TextBlock("Cols", {
+              row: 2, column: 0, font: "10px sans-serif", stroke: "#666", padding: 3
+            }),
+            new idl.TextBlock("", {
+              row: 2, column: 1, font: "10px sans-serif", stroke: "#333", padding: 3
+            }).bind("text", "cols")
+          )
+      )
+  );
+
+  // Default template: simple rounded rectangle
+  diagram.nodeTemplate = new idl.Node("Spot")
+    .add(
+      new idl.Shape("RoundedRectangle", {
+        fill: "#95A5A6", stroke: "#7F8C8D", strokeWidth: 1.5,
+        width: 100, height: 36, parameter1: 4
+      }),
+      new idl.TextBlock("", {
+        font: "11px sans-serif", stroke: "white", textAlign: "center"
+      }).bind("text", "text")
+    );
+
+  diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal, curve: idl.Link.Bezier })
+    .add(new idl.Shape("", { stroke: "#BDC3C7", strokeWidth: 1.5 }))
+    .add(new idl.Shape("", { toArrow: "OpenTriangle", stroke: "#BDC3C7", fill: "#BDC3C7" }));
+
+  diagram.model = new idl.GraphLinksModel({
+    nodeDataArray: [
+      { key: 1, category: "server", name: "web-01", ip: "10.0.0.1", status: "RUNNING" },
+      { key: 2, category: "server", name: "db-master", ip: "10.0.0.2", status: "RUNNING" },
+      { key: 3, category: "service", icon: "⚙", color: "#E74C3C" },
+      { key: 4, category: "service", icon: "🔐", color: "#2ECC71" },
+      { key: 5, category: "service", icon: "📨", color: "#3498DB" },
+      { key: 6, category: "table", name: "users", pk: "id (UUID)", cols: "6 columns" },
+      { key: 7, category: "table", name: "orders", pk: "id (BIGINT)", cols: "9 columns" },
+    ],
+    linkDataArray: [
+      { from: 1, to: 3 },
+      { from: 1, to: 5 },
+      { from: 3, to: 4 },
+      { from: 4, to: 2 },
+      { from: 5, to: 2 },
+      { from: 2, to: 6 },
+      { from: 2, to: 7 },
+    ]
+  });
+
+  diagram.layout = new idl.ForceDirectedLayout({
+    maxIterations: 200,
+    defaultSpringStiffness: 0.04,
+    defaultSpringLength: 120,
+    defaultElectricalCharge: 200,
+  });
+</script>
+</body>
+</html>
