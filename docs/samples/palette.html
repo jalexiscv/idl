@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drag-and-Drop Palette — IDL Samples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+    nav { background: #1a1a2e; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 20px; }
+    nav a { color: #8ab4f8; text-decoration: none; font-size: 13px; }
+    nav h2 { font-size: 16px; font-weight: 500; }
+    .layout { display: flex; height: 520px; }
+    #paletteDiv { width: 160px; background: #fff; border-right: 2px solid #ddd; flex-shrink: 0; }
+    #diagramDiv { flex: 1; background: #fafafa; }
+    .info { max-width: 800px; margin: 20px auto; padding: 0 20px; }
+    .info pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 12px; }
+    .info h3 { margin-top: 20px; font-size: 15px; }
+    .info p { color: #666; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html">← Samples</a>
+  <h2>Drag-and-Drop Palette</h2>
+</nav>
+<div class="layout">
+  <div id="paletteDiv"></div>
+  <div id="diagramDiv"></div>
+</div>
+<div class="info">
+  <h3>About this sample</h3>
+  <p>Arrastra nodos desde la paleta izquierda hacia el diagrama. La paleta comparte templates con el diagrama para mantener consistencia visual. Usa Del/Backspace para eliminar nodos seleccionados.</p>
+</div>
+<script src="../idl.js"></script>
+<script>
+  var palette = new idl.Palette("paletteDiv");
+  var diagram = new idl.Diagram("diagramDiv");
+
+  // Shared node templates
+  function makeNode(category, fill, stroke, shape, w, h, icon) {
+    return new idl.Node("Spot", { selectionAdorned: true })
+      .add(
+        new idl.Shape(shape, {
+          fill: fill, stroke: stroke, strokeWidth: 2,
+          width: w, height: h, parameter1: shape === "RoundedRectangle" ? 6 : 0
+        }),
+        new idl.TextBlock(icon || "", {
+          font: "20px sans-serif", stroke: "white", textAlign: "center"
+        })
+      );
+  }
+
+  palette.nodeTemplateMap.add("process", makeNode("process", "#3498DB", "#2980B9", "RoundedRectangle", 100, 50, "⬡"));
+  palette.nodeTemplateMap.add("decision", makeNode("decision", "#E74C3C", "#C0392B", "Diamond", 70, 70, "?"));
+  palette.nodeTemplateMap.add("startend", makeNode("startend", "#2ECC71", "#27AE60", "RoundedRectangle", 100, 50, "⬤"));
+  palette.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Parallelogram", 100, 50, "🗄"));
+
+  // Same templates on diagram
+  diagram.nodeTemplateMap.add("process", makeNode("process", "#3498DB", "#2980B9", "RoundedRectangle", 100, 50, "⬡"));
+  diagram.nodeTemplateMap.add("decision", makeNode("decision", "#E74C3C", "#C0392B", "Diamond", 70, 70, "?"));
+  diagram.nodeTemplateMap.add("startend", makeNode("startend", "#2ECC71", "#27AE60", "RoundedRectangle", 100, 50, "⬤"));
+  diagram.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Parallelogram", 100, 50, "🗄"));
+
+  diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
+    .add(new idl.Shape("", { stroke: "#7F8C8D", strokeWidth: 2 }))
+    .add(new idl.Shape("", { toArrow: "Standard", stroke: "#7F8C8D", fill: "#7F8C8D", scale: 1.3 }));
+
+  // Palette data
+  palette.model = new idl.GraphLinksModel({
+    nodeDataArray: [
+      { key: 1, category: "process" },
+      { key: 2, category: "decision" },
+      { key: 3, category: "startend" },
+      { key: 4, category: "data" },
+    ]
+  });
+
+  // Diagram starts with a few nodes
+  diagram.model = new idl.GraphLinksModel({
+    nodeDataArray: [
+      { key: 1, category: "startend" },
+      { key: 2, category: "process" },
+    ],
+    linkDataArray: [
+      { from: 1, to: 2 },
+    ]
+  });
+
+  // Delete selected nodes
+  diagram.commandHandler.deleteSelection = function() {
+    var sel = this.diagram.selection;
+    sel.each(function(p) {
+      if (p instanceof idl.Node && !(p instanceof idl.Group)) {
+        this.diagram.model.removeNodeData(p.data);
+      }
+    });
+  };
+</script>
+</body>
+</html>
