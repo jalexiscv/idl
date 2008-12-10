@@ -112,8 +112,8 @@
     );
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal, curve: idl.Link.Bezier })
-    .add(new idl.Shape("", { stroke: "#BDC3C7", strokeWidth: 1.5 }))
-    .add(new idl.Shape("", { toArrow: "OpenTriangle", stroke: "#BDC3C7", fill: "#BDC3C7" }));
+    .add(new idl.Shape({ stroke: "#BDC3C7", strokeWidth: 1.5 }))
+    .add(new idl.Shape({ toArrow: "OpenTriangle", stroke: "#BDC3C7", fill: "#BDC3C7" }));
 
   diagram.model = new idl.GraphLinksModel({
     nodeDataArray: [

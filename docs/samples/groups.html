@@ -45,7 +45,7 @@
         ),
       new idl.Panel("Horizontal", { defaultAlignment: idl.Spot.Left })
         .add(
-          new idl.Shape("", {
+          new idl.Shape({
             width: 10, height: 10, margin: 4
           }).bind("fill", "color"),
           new idl.TextBlock("", {
@@ -65,8 +65,8 @@
     );
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
-    .add(new idl.Shape("", { stroke: "#999", strokeWidth: 1.5 }))
-    .add(new idl.Shape("", { toArrow: "Standard", stroke: "#999", fill: "#999", scale: 1 }));
+    .add(new idl.Shape({ stroke: "#999", strokeWidth: 1.5 }))
+    .add(new idl.Shape({ toArrow: "Standard", stroke: "#999", fill: "#999", scale: 1 }));
 
   diagram.model = new idl.GraphLinksModel({
     nodeDataArray: [

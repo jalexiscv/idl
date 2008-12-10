@@ -65,8 +65,8 @@
     );
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
-    .add(new idl.Shape("", { stroke: "#BDC3C7", strokeWidth: 2 }))
-    .add(new idl.Shape("", { toArrow: "Standard", stroke: "#BDC3C7", fill: "#BDC3C7" }));
+    .add(new idl.Shape({ stroke: "#BDC3C7", strokeWidth: 2 }))
+    .add(new idl.Shape({ toArrow: "Standard", stroke: "#BDC3C7", fill: "#BDC3C7" }));
 
   var nodeData = [];
   for (var i = 0; i < 6; i++) {

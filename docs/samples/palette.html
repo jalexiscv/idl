@@ -53,17 +53,17 @@
   palette.nodeTemplateMap.add("process", makeNode("process", "#3498DB", "#2980B9", "RoundedRectangle", 100, 50, "⬡"));
   palette.nodeTemplateMap.add("decision", makeNode("decision", "#E74C3C", "#C0392B", "Diamond", 70, 70, "?"));
   palette.nodeTemplateMap.add("startend", makeNode("startend", "#2ECC71", "#27AE60", "RoundedRectangle", 100, 50, "⬤"));
-  palette.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Parallelogram", 100, 50, "🗄"));
+  palette.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Rectangle", 100, 50, "🗄"));
 
   // Same templates on diagram
   diagram.nodeTemplateMap.add("process", makeNode("process", "#3498DB", "#2980B9", "RoundedRectangle", 100, 50, "⬡"));
   diagram.nodeTemplateMap.add("decision", makeNode("decision", "#E74C3C", "#C0392B", "Diamond", 70, 70, "?"));
   diagram.nodeTemplateMap.add("startend", makeNode("startend", "#2ECC71", "#27AE60", "RoundedRectangle", 100, 50, "⬤"));
-  diagram.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Parallelogram", 100, 50, "🗄"));
+  diagram.nodeTemplateMap.add("data", makeNode("data", "#F39C12", "#E67E22", "Rectangle", 100, 50, "🗄"));
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
-    .add(new idl.Shape("", { stroke: "#7F8C8D", strokeWidth: 2 }))
-    .add(new idl.Shape("", { toArrow: "Standard", stroke: "#7F8C8D", fill: "#7F8C8D", scale: 1.3 }));
+    .add(new idl.Shape({ stroke: "#7F8C8D", strokeWidth: 2 }))
+    .add(new idl.Shape({ toArrow: "Standard", stroke: "#7F8C8D", fill: "#7F8C8D", scale: 1.3 }));
 
   // Palette data
   palette.model = new idl.GraphLinksModel({

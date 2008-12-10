@@ -48,7 +48,7 @@
     );
 
   diagram.linkTemplate = new idl.Link({ curve: idl.Link.Bezier })
-    .add(new idl.Shape("", { strokeWidth: 1.5 }).bind("stroke", "color"));
+    .add(new idl.Shape({ strokeWidth: 1.5 }).bind("stroke", "color"));
 
   var nodeData = [];
   var linkData = [];

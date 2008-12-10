@@ -57,8 +57,8 @@
     );
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
-    .add(new idl.Shape("", { stroke: "#999", strokeWidth: 2 }))
-    .add(new idl.Shape("", { toArrow: "Standard", stroke: "#999", fill: "#999", scale: 1.2 }));
+    .add(new idl.Shape({ stroke: "#999", strokeWidth: 2 }))
+    .add(new idl.Shape({ toArrow: "Standard", stroke: "#999", fill: "#999", scale: 1.2 }));
 
   diagram.model = new idl.GraphLinksModel({
     nodeDataArray: [

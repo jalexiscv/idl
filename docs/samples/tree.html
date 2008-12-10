@@ -60,7 +60,7 @@ diagram.model = new idl.TreeModel([
     );
 
   diagram.linkTemplate = new idl.Link({ routing: idl.Link.Normal })
-    .add(new idl.Shape("", { stroke: "#666", strokeWidth: 1.5 }));
+    .add(new idl.Shape({ stroke: "#666", strokeWidth: 1.5 }));
 
   diagram.layout = new idl.TreeLayout({
     angle: 90,
