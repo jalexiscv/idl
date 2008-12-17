@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Diagrams Library (IDL)</title>
+  <title>Interactive Diagrams Library (IDL) — Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -11,6 +11,26 @@
       background: #f5f7fa;
       color: #2d3748;
     }
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed; left: 0; top: 0; width: 230px; height: 100vh;
+      background: #1a1a2e; color: #ccc; overflow-y: auto; z-index: 100;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #2d2d4e; }
+    .sidebar-header h2 { font-size: 15px; color: #fff; }
+    .sidebar-header small { font-size: 10px; color: #718096; }
+    .sidebar-nav { padding: 8px 0; flex: 1; }
+    .sidebar-nav a { display: block; padding: 8px 16px; color: #a0aec0; text-decoration: none; font-size: 13px; transition: all .15s; }
+    .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .sidebar-nav a.active { color: #fff; background: rgba(49,130,206,0.15); border-left: 3px solid #3182ce; }
+    .sidebar-section { padding: 12px 16px 4px; font-size: 10px; text-transform: uppercase; color: #718096; letter-spacing: 1.5px; }
+    .sidebar-nav a.sub { padding-left: 28px; font-size: 12px; }
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid #2d2d4e; }
+    .sidebar-footer a { color: #718096; text-decoration: none; font-size: 12px; }
+    .sidebar-footer a:hover { color: #fff; }
+    /* ── Main Content ── */
+    .main-content { margin-left: 230px; }
     header {
       background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #3182ce 100%);
       color: white;
@@ -89,9 +109,35 @@
 </head>
 <body>
 
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>IDL Dashboard</h2>
+    <small>Interactive Diagrams Library</small>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="active">Inicio</a>
+    <div class="sidebar-section">Samples</div>
+    <a href="samples/index.html">Galería de Samples</a>
+    <a href="samples/flowchart.html" class="sub">Basic Flowchart</a>
+    <a href="samples/tree.html" class="sub">Tree Layout</a>
+    <a href="samples/force-directed.html" class="sub">Force-Directed Layout</a>
+    <a href="samples/circular.html" class="sub">Circular Layout</a>
+    <a href="samples/groups.html" class="sub">Groups &amp; Subgraphs</a>
+    <a href="samples/custom-nodes.html" class="sub">Custom Node Templates</a>
+    <a href="samples/palette.html" class="sub">Drag-and-Drop Palette</a>
+    <a href="samples/resize-rotate.html" class="sub">Resize &amp; Rotate</a>
+    <a href="samples/linking.html" class="sub">Linking Tool</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="https://github.com/jalexiscv/idl" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</aside>
+
+<div class="main-content">
+
 <header>
   <h1>Interactive Diagrams Library (IDL)</h1>
-  <p>Interactive Diagrams Library — Librería JavaScript nativa para diagramas interactivos con renderizado SVG y Canvas</p>
+  <p>Librería JavaScript nativa para diagramas interactivos con renderizado SVG y Canvas</p>
   <div style="margin-top:20px">
     <span class="badge">SVG + Canvas</span>
     <span class="badge">148 clases</span>
@@ -146,10 +192,6 @@
   </div>
 </main>
 
-<div style="text-align:center;padding:20px">
-  <a href="samples/" style="display:inline-block;padding:10px 24px;background:#1a73e8;color:#fff;border-radius:6px;text-decoration:none;font-size:14px;font-weight:500;">View All Samples →</a>
-</div>
-
 <footer>
   <p>
     <strong>Interactive Diagrams Library (IDL) Free Edition</strong> — Copyright &copy; 2019 Jose Alexis Correa Valencia — MIT License
@@ -161,10 +203,10 @@
   </p>
 </footer>
 
+</div>
+
 <script src="idl.js"></script>
 <script>
-  // ── Diagrama 1: Flujo de proceso ──
-
   var d1 = new idl.Diagram("diagram1");
 
   d1.nodeTemplate = new idl.Node("Spot", { selectionAdorned: true })
@@ -204,8 +246,6 @@
 
   d1.layout = new idl.TreeLayout({ angle: 90, layerSpacing: 50, nodeSpacing: 25 });
 
-  // ── Diagrama 2: Organigrama circular ──
-
   var d2 = new idl.Diagram("diagram2");
 
   var colors = ["#e53e3e","#dd6b20","#d69e2e","#38a169","#319795","#3182ce","#5a67d8","#805ad5","#d53f8c"];
@@ -237,8 +277,6 @@
   });
 
   d2.layout = new idl.CircularLayout({ radius: 180, arrangement: idl.CircularArrangement.ConstantSpacing });
-
-  // ── Botones ──
 
   function applyTreeLayout() {
     d1.layout = new idl.TreeLayout({ angle: 90, layerSpacing: 50, nodeSpacing: 25 });
