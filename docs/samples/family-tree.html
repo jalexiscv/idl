@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Árbol Genealógico — IDL Samples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+    .sidebar { position: fixed; left: 0; top: 0; width: 230px; height: 100vh; background: #1a1a2e; color: #ccc; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #2d2d4e; }
+    .sidebar-header h2 { font-size: 15px; color: #fff; }
+    .sidebar-header small { font-size: 10px; color: #718096; }
+    .sidebar-nav { padding: 8px 0; flex: 1; }
+    .sidebar-nav a { display: block; padding: 8px 16px; color: #a0aec0; text-decoration: none; font-size: 13px; transition: all .15s; }
+    .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .sidebar-nav a.active { color: #fff; background: rgba(49,130,206,0.15); border-left: 3px solid #3182ce; }
+    .sidebar-section { padding: 12px 16px 4px; font-size: 10px; text-transform: uppercase; color: #718096; letter-spacing: 1.5px; }
+    .sidebar-nav a.sub { padding-left: 28px; font-size: 12px; }
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid #2d2d4e; }
+    .sidebar-footer a { color: #718096; text-decoration: none; font-size: 12px; }
+    .sidebar-footer a:hover { color: #fff; }
+    .main-content { margin-left: 230px; }
+    #diagramDiv { width: 100%; height: 560px; background: #fff; border-bottom: 1px solid #ddd; }
+    .controls { max-width: 900px; margin: 12px auto; padding: 0 20px; display: flex; gap: 10px; align-items: center; }
+    .controls button { padding: 6px 16px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 12px; }
+    .controls button:hover { background: #e8e8e8; }
+    .info { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+    .info pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 12px; }
+    .info h3 { margin-top: 20px; font-size: 15px; }
+    .info p { color: #666; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+    .page-header { background: #fff; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; }
+    .page-header h2 { font-size: 17px; color: #2d3748; }
+    .page-header .legend { display: flex; gap: 14px; font-size: 11px; color: #666; }
+    .page-header .legend span { display: flex; align-items: center; gap: 4px; }
+    .page-header .legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>IDL Dashboard</h2>
+    <small>Interactive Diagrams Library</small>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="../index.html">Inicio</a>
+    <div class="sidebar-section">Samples</div>
+    <a href="index.html">Galería de Ejemplos</a>
+    <a href="flowchart.html" class="sub">Diagrama de Flujo Básico</a>
+    <a href="tree.html" class="sub">Layout de Árbol</a>
+    <a href="force-directed.html" class="sub">Layout de Fuerza Dirigida</a>
+    <a href="circular.html" class="sub">Layout Circular</a>
+    <a href="groups.html" class="sub">Grupos y Subgrafos</a>
+    <a href="custom-nodes.html" class="sub">Plantillas de Nodos</a>
+    <a href="palette.html" class="sub">Paleta de Arrastrar y Soltar</a>
+    <a href="resize-rotate.html" class="sub">Redimensionar y Rotar</a>
+    <a href="linking.html" class="sub">Herramienta de Enlace</a>
+    <a href="family-tree.html" class="sub active">Árbol Genealógico</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="https://github.com/jalexiscv/idl" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</aside>
+
+<div class="main-content">
+
+<div class="page-header">
+  <h2>Árbol Genealógico — Nobleza Británica</h2>
+  <div class="legend">
+    <span><span class="dot" style="background:#FEBA00"></span> Rey/Reina</span>
+    <span><span class="dot" style="background:#679DDA"></span> Príncipe/Princesa</span>
+    <span><span class="dot" style="background:#A2DAFF"></span> Masculino</span>
+    <span><span class="dot" style="background:#FFCBEA"></span> Femenino</span>
+  </div>
+</div>
+<div id="diagramDiv"></div>
+<div class="controls">
+  <button onclick="diagram.zoomToFit()">Ajustar Vista</button>
+  <button onclick="centerOnRoot()">Centrar en Raíz</button>
+  <button onclick="diagram.scale = 0.7; centerOnRoot()">Reset Vista</button>
+</div>
+<div class="info">
+  <h3>Sobre este ejemplo</h3>
+  <p>Árbol genealógico de la nobleza británica desde Jorge V. Cada nodo muestra nombre, fechas de nacimiento/defunción y género. El color del borde indica el estatus real (dorado = rey/reina, azul = príncipe/princesa, verde = civil). La insignia de género usa azul para masculino y rosa para femenino.</p>
+  <pre>diagram.layout = new idl.TreeLayout({
+  angle: 90,
+  nodeSpacing: 15,
+  layerSpacing: 60,
+  arrangement: idl.TreeLayout.ArrangementVertical
+});
+
+diagram.model = new idl.TreeModel({
+  nodeKeyProperty: "name",
+  nodeParentProperty: "parent",
+  nodeDataArray: [ /* datos genealógicos */ ]
+});</pre>
+</div>
+
+</div>
+
+<script src="../idl.js"></script>
+<script>
+  var diagram = new idl.Diagram("diagramDiv");
+
+  // ── Theme ──
+  var theme = {
+    maleBadge: "#A2DAFF",
+    femaleBadge: "#FFCBEA",
+    maleText: "#001C76",
+    femaleText: "#7A005E",
+    kingBorder: "#FEBA00",
+    princeBorder: "#679DDA",
+    civilianBorder: "#58ADA7",
+    linkColor: "#9CA3AF"
+  };
+
+  // ── Node template ──
+  diagram.nodeTemplate = new idl.Node("Spot", {
+    selectionAdorned: true,
+    selectionAdornmentTemplate:
+      new idl.Adornment("Spot")
+        .add(new idl.Shape("RoundedRectangle", {
+          fill: null, stroke: "#485670", strokeWidth: 2,
+          strokeDashArray: [4, 2], parameter1: 8
+        }))
+  })
+    .add(
+      // Main card background
+      new idl.Shape("RoundedRectangle", {
+        width: 190, height: 80, parameter1: 8,
+        fill: "white", strokeWidth: 2.5
+      }).bind("stroke", "border"),
+      // Name
+      new idl.TextBlock("", {
+        font: "bold 13px sans-serif", stroke: "#383838",
+        textAlign: "center", width: 170,
+        alignment: new idl.Spot(0.5, 0, 0, -22)
+      }).bind("text", "name"),
+      // Birth - Death
+      new idl.TextBlock("", {
+        font: "11px sans-serif", stroke: "#888",
+        textAlign: "center",
+        alignment: new idl.Spot(0.5, 0, 0, -4)
+      }).bind("text", "dates"),
+      // Gender badge
+      new idl.Panel("Spot", {
+        alignment: new idl.Spot(1, 1, -8, -8)
+      })
+        .add(
+          new idl.Shape("RoundedRectangle", {
+            width: 36, height: 18, parameter1: 4
+          }).bind("fill", "badgeColor"),
+          new idl.TextBlock("", {
+            font: "bold 9px sans-serif", textAlign: "center"
+          }).bind("text", "genderLabel").bind("stroke", "badgeText")
+        )
+    );
+
+  // ── Link template ──
+  diagram.linkTemplate = new idl.Link({
+    routing: idl.Link.Orthogonal,
+    corner: 5
+  })
+    .add(new idl.Shape({ stroke: theme.linkColor, strokeWidth: 1.2 }));
+
+  // ── Layout ──
+  diagram.layout = new idl.TreeLayout({
+    angle: 90,
+    nodeSpacing: 15,
+    layerSpacing: 60,
+    arrangement: idl.TreeLayout.ArrangementVertical
+  });
+
+  // ── Data helpers ──
+  function genderLabel(g) { return g === "M" ? "M" : "F"; }
+  function genderBadge(g) { return g === "M" ? theme.maleBadge : theme.femaleBadge; }
+  function genderText(g) { return g === "M" ? theme.maleText : theme.femaleText; }
+  function statusBorder(s) {
+    switch (s) {
+      case "king": case "queen": return theme.kingBorder;
+      case "prince": case "princess": return theme.princeBorder;
+      default: return theme.civilianBorder;
+    }
+  }
+
+  function makePerson(name, gender, status, born, death, parent) {
+    return {
+      name: name,
+      genderLabel: genderLabel(gender),
+      badgeColor: genderBadge(gender),
+      badgeText: genderText(gender),
+      border: statusBorder(status),
+      dates: (born || "?") + " – " + (death || "?"),
+      parent: parent || undefined
+    };
+  }
+
+  // ── British Royal Family data ──
+  var data = [
+    makePerson("Jorge V", "M", "king", "1865", "1936"),
+    makePerson("Eduardo VIII", "M", "king", "1894", "1972", "Jorge V"),
+    makePerson("Jorge VI", "M", "king", "1895", "1952", "Jorge V"),
+    makePerson("Princesa Mary", "F", "princess", "1897", "1965", "Jorge V"),
+    makePerson("Príncipe Henry", "M", "prince", "1900", "1974", "Jorge V"),
+    makePerson("Príncipe George", "M", "prince", "1902", "1942", "Jorge V"),
+    makePerson("Príncipe John", "M", "prince", "1905", "1919", "Jorge V"),
+
+    makePerson("Isabel II", "F", "queen", "1926", "2022", "Jorge VI"),
+    makePerson("Princesa Margaret", "F", "princess", "1930", "2002", "Jorge VI"),
+
+    makePerson("Carlos III", "M", "king", "1948", "", "Isabel II"),
+    makePerson("Princesa Ana", "F", "princess", "1950", "", "Isabel II"),
+    makePerson("Príncipe Andrés", "M", "prince", "1960", "", "Isabel II"),
+    makePerson("Príncipe Eduardo", "M", "prince", "1964", "", "Isabel II"),
+
+    makePerson("Príncipe William", "M", "prince", "1982", "", "Carlos III"),
+    makePerson("Príncipe Harry", "M", "prince", "1984", "", "Carlos III"),
+
+    makePerson("Príncipe George", "M", "prince", "2013", "", "Príncipe William"),
+    makePerson("Princesa Charlotte", "F", "princess", "2015", "", "Príncipe William"),
+    makePerson("Príncipe Louis", "M", "prince", "2018", "", "Príncipe William"),
+
+    makePerson("Príncipe Archie", "M", "prince", "2019", "", "Príncipe Harry"),
+    makePerson("Princesa Lilibet", "F", "princess", "2021", "", "Príncipe Harry"),
+
+    makePerson("Peter Phillips", "M", "civilian", "1977", "", "Princesa Ana"),
+    makePerson("Zara Tindall", "F", "civilian", "1981", "", "Princesa Ana"),
+    makePerson("Princesa Beatrice", "F", "princess", "1988", "", "Príncipe Andrés"),
+    makePerson("Princesa Eugenie", "F", "princess", "1990", "", "Príncipe Andrés"),
+    makePerson("Lady Louise", "F", "civilian", "2003", "", "Príncipe Eduardo"),
+    makePerson("James, Conde de Wessex", "M", "civilian", "2007", "", "Príncipe Eduardo"),
+  ];
+
+  diagram.model = new idl.TreeModel({
+    nodeKeyProperty: "name",
+    nodeParentProperty: "parent",
+    nodeDataArray: data
+  });
+
+  // ── Controls ──
+  function centerOnRoot() {
+    var root = diagram.findNodeForKey("Jorge V");
+    if (root) {
+      diagram.centerRect(root.actualBounds);
+    }
+  }
+
+  // Center on root after initial layout
+  diagram.addDiagramListener("InitialLayoutCompleted", function() {
+    diagram.scale = 0.75;
+    centerOnRoot();
+  });
+</script>
+</body>
+</html>
