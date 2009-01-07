@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagrama Entidad-Relación — IDL Samples</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; }
+    .sidebar { position: fixed; left: 0; top: 0; width: 230px; height: 100vh; background: #1a1a2e; color: #ccc; overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 20px 16px; border-bottom: 1px solid #2d2d4e; }
+    .sidebar-header h2 { font-size: 15px; color: #fff; }
+    .sidebar-header small { font-size: 10px; color: #718096; }
+    .sidebar-nav { padding: 8px 0; flex: 1; }
+    .sidebar-nav a { display: block; padding: 8px 16px; color: #a0aec0; text-decoration: none; font-size: 13px; transition: all .15s; }
+    .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .sidebar-nav a.active { color: #fff; background: rgba(49,130,206,0.15); border-left: 3px solid #3182ce; }
+    .sidebar-section { padding: 12px 16px 4px; font-size: 10px; text-transform: uppercase; color: #718096; letter-spacing: 1.5px; }
+    .sidebar-nav a.sub { padding-left: 28px; font-size: 12px; }
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid #2d2d4e; }
+    .sidebar-footer a { color: #718096; text-decoration: none; font-size: 12px; }
+    .sidebar-footer a:hover { color: #fff; }
+    .main-content { margin-left: 230px; }
+    #diagramDiv { width: 100%; height: 580px; background: #f7f9fc; border-bottom: 1px solid #ddd; }
+    .controls { max-width: 900px; margin: 12px auto; padding: 0 20px; display: flex; gap: 10px; align-items: center; }
+    .controls button { padding: 6px 16px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 12px; }
+    .controls button:hover { background: #e8e8e8; }
+    .legend { display: flex; gap: 18px; margin-left: auto; font-size: 11px; color: #666; align-items: center; }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .legend .dot { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+    .info { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+    .info pre { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; margin-top: 12px; }
+    .info h3 { margin-top: 20px; font-size: 15px; }
+    .info p { color: #666; font-size: 13px; line-height: 1.6; margin-top: 6px; }
+    .page-header { background: #fff; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; }
+    .page-header h2 { font-size: 17px; color: #2d3748; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>IDL Dashboard</h2>
+    <small>Interactive Diagrams Library</small>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="../index.html">Inicio</a>
+    <div class="sidebar-section">Samples</div>
+    <a href="index.html">Galería de Ejemplos</a>
+    <a href="flowchart.html" class="sub">Diagrama de Flujo Básico</a>
+    <a href="tree.html" class="sub">Layout de Árbol</a>
+    <a href="force-directed.html" class="sub">Layout de Fuerza Dirigida</a>
+    <a href="circular.html" class="sub">Layout Circular</a>
+    <a href="groups.html" class="sub">Grupos y Subgrafos</a>
+    <a href="custom-nodes.html" class="sub">Plantillas de Nodos</a>
+    <a href="palette.html" class="sub">Paleta de Arrastrar y Soltar</a>
+    <a href="resize-rotate.html" class="sub">Redimensionar y Rotar</a>
+    <a href="linking.html" class="sub">Herramienta de Enlace</a>
+    <a href="family-tree.html" class="sub">Árbol Genealógico</a>
+    <a href="entity-relationship.html" class="sub active">Entidad-Relación</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="https://github.com/jalexiscv/idl" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</aside>
+
+<div class="main-content">
+
+<div class="page-header">
+  <h2>Diagrama Entidad-Relación (ER)</h2>
+</div>
+<div id="diagramDiv"></div>
+<div class="controls">
+  <button onclick="diagram.layoutDiagram(true)">Re-organizar</button>
+  <button onclick="diagram.zoomToFit()">Ajustar Vista</button>
+  <div class="legend">
+    <span><span class="dot" style="background:#7F36B0"></span> Clave</span>
+    <span><span class="dot" style="background:#3999BF"></span> Texto</span>
+    <span><span class="dot" style="background:#62BD8E"></span> Numérico</span>
+    <span><span class="dot" style="background:#C41000"></span> Binario</span>
+  </div>
+</div>
+<div class="info">
+  <h3>Sobre este ejemplo</h3>
+  <p>Diagrama entidad-relación con entidades como tablas de base de datos, atributos codificados por color semántico y relaciones con cardinalidad. Los nodos usan <code>Panel.Table</code> para organizar los atributos en filas. Las relaciones muestran la cardinalidad en cada extremo.</p>
+  <pre>diagram.layout = new idl.ForceDirectedLayout({
+  defaultSpringLength: 200,
+  defaultElectricalCharge: 300,
+});
+
+// Atributos codificados por tipo:
+//   Diamante púrpura = Clave primaria/foránea
+//   Rectángulo azul  = Texto/descripción
+//   Círculo verde    = Numérico/monetario
+//   Triángulo rojo   = Binario/imagen</pre>
+</div>
+
+</div>
+
+<script src="../idl.js"></script>
+<script>
+  var diagram = new idl.Diagram("diagramDiv");
+
+  // ── Color semantics ──
+  var KEY_COLOR = "#7F36B0";     // purple — primary/foreign keys
+  var TEXT_COLOR = "#3999BF";    // blue — text/name attributes
+  var NUM_COLOR = "#62BD8E";     // green — numeric/price attributes
+  var BIN_COLOR = "#C41000";     // red — binary/image attributes
+  var ENTITY_BG = "#FFFFFF";     // white entity background
+  var ENTITY_BORDER = "#C4D8E2"; // light blue border
+  var HEADER_BG = "#37474F";     // dark header background
+
+  // ── Helper: build an attribute row ──
+  function attrRow(col, figureType, rowIdx) {
+    return new idl.Panel("Horizontal", { margin: 2 })
+      .add(
+        new idl.Shape(figureType, {
+          width: 14, height: 14, fill: col, stroke: col, margin: 4
+        }),
+        new idl.TextBlock("", {
+          font: "13px sans-serif", stroke: "#383838", margin: 2
+        }).bind("text", "attr" + rowIdx)
+      );
+  }
+
+  // ── Entity template: Products ──
+  diagram.nodeTemplateMap.add("Products",
+    new idl.Node("Auto", {
+      selectionAdorned: true,
+      resizable: true,
+      fromSpot: idl.Spot.LeftRightSides,
+      toSpot: idl.Spot.LeftRightSides
+    })
+      .add(
+        new idl.Shape("RoundedRectangle", {
+          fill: ENTITY_BG, stroke: ENTITY_BORDER, strokeWidth: 3, parameter1: 6
+        }),
+        new idl.Panel("Table", {
+          margin: 8,
+          defaultRowSeparatorStroke: "#E8F1FF",
+          defaultColumnSeparatorStroke: ""
+        })
+          .add(
+            // Header
+            new idl.TextBlock("Products", {
+              row: 0, column: 0, columnSpan: 2,
+              font: "bold 15px sans-serif", stroke: "white",
+              background: HEADER_BG, padding: 6, textAlign: "center",
+              stretch: idl.GraphObject.Fill
+            }),
+            // Attributes header
+            new idl.TextBlock("Atributos", {
+              row: 1, column: 0, columnSpan: 2,
+              font: "bold 12px sans-serif", stroke: "#666", padding: 3,
+              background: "#F0F4F8"
+            }),
+            // Primary key
+            new idl.Shape("Diamond", {
+              row: 2, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ProductID", {
+              row: 2, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            // Text attributes
+            new idl.Shape("Rectangle", {
+              row: 3, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ProductName", {
+              row: 3, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 4, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ItemDescription", {
+              row: 4, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            // Numeric
+            new idl.Shape("Circle", {
+              row: 5, column: 0, width: 14, height: 14,
+              fill: NUM_COLOR, stroke: NUM_COLOR, margin: 4
+            }),
+            new idl.TextBlock("WholesalePrice", {
+              row: 5, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            // Binary
+            new idl.Shape("Triangle", {
+              row: 6, column: 0, width: 14, height: 14,
+              fill: BIN_COLOR, stroke: BIN_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ProductPhoto", {
+              row: 6, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            // FK section
+            new idl.TextBlock("Claves Foráneas", {
+              row: 7, column: 0, columnSpan: 2,
+              font: "bold 11px sans-serif", stroke: "#999", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 8, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("SupplierID", {
+              row: 8, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Diamond", {
+              row: 9, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("CategoryID", {
+              row: 9, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            })
+          )
+      )
+  );
+
+  // ── Entity template: Suppliers ──
+  diagram.nodeTemplateMap.add("Suppliers",
+    new idl.Node("Auto", {
+      selectionAdorned: true,
+      resizable: true,
+      fromSpot: idl.Spot.LeftRightSides,
+      toSpot: idl.Spot.LeftRightSides
+    })
+      .add(
+        new idl.Shape("RoundedRectangle", {
+          fill: ENTITY_BG, stroke: ENTITY_BORDER, strokeWidth: 3, parameter1: 6
+        }),
+        new idl.Panel("Table", {
+          margin: 8,
+          defaultRowSeparatorStroke: "#E8F1FF",
+          defaultColumnSeparatorStroke: ""
+        })
+          .add(
+            new idl.TextBlock("Suppliers", {
+              row: 0, column: 0, columnSpan: 2,
+              font: "bold 15px sans-serif", stroke: "white",
+              background: HEADER_BG, padding: 6, textAlign: "center",
+              stretch: idl.GraphObject.Fill
+            }),
+            new idl.TextBlock("Atributos", {
+              row: 1, column: 0, columnSpan: 2,
+              font: "bold 12px sans-serif", stroke: "#666", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 2, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("SupplierID", {
+              row: 2, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 3, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("CompanyName", {
+              row: 3, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 4, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ContactName", {
+              row: 4, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 5, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Address", {
+              row: 5, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Circle", {
+              row: 6, column: 0, width: 14, height: 14,
+              fill: NUM_COLOR, stroke: NUM_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ShippingDistance", {
+              row: 6, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Triangle", {
+              row: 7, column: 0, width: 14, height: 14,
+              fill: BIN_COLOR, stroke: BIN_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Logo", {
+              row: 7, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            })
+          )
+      )
+  );
+
+  // ── Entity template: Categories ──
+  diagram.nodeTemplateMap.add("Categories",
+    new idl.Node("Auto", {
+      selectionAdorned: true,
+      resizable: true,
+      fromSpot: idl.Spot.LeftRightSides,
+      toSpot: idl.Spot.LeftRightSides
+    })
+      .add(
+        new idl.Shape("RoundedRectangle", {
+          fill: ENTITY_BG, stroke: ENTITY_BORDER, strokeWidth: 3, parameter1: 6
+        }),
+        new idl.Panel("Table", {
+          margin: 8,
+          defaultRowSeparatorStroke: "#E8F1FF",
+          defaultColumnSeparatorStroke: ""
+        })
+          .add(
+            new idl.TextBlock("Categories", {
+              row: 0, column: 0, columnSpan: 2,
+              font: "bold 15px sans-serif", stroke: "white",
+              background: HEADER_BG, padding: 6, textAlign: "center",
+              stretch: idl.GraphObject.Fill
+            }),
+            new idl.TextBlock("Atributos", {
+              row: 1, column: 0, columnSpan: 2,
+              font: "bold 12px sans-serif", stroke: "#666", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 2, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("CategoryID", {
+              row: 2, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 3, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("CategoryName", {
+              row: 3, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Rectangle", {
+              row: 4, column: 0, width: 14, height: 10,
+              fill: TEXT_COLOR, stroke: TEXT_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Description", {
+              row: 4, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Triangle", {
+              row: 5, column: 0, width: 14, height: 14,
+              fill: BIN_COLOR, stroke: BIN_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Icon", {
+              row: 5, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.TextBlock("Claves Foráneas", {
+              row: 6, column: 0, columnSpan: 2,
+              font: "bold 11px sans-serif", stroke: "#999", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 7, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("SupplierID", {
+              row: 7, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            })
+          )
+      )
+  );
+
+  // ── Entity template: Order Details ──
+  diagram.nodeTemplateMap.add("OrderDetails",
+    new idl.Node("Auto", {
+      selectionAdorned: true,
+      resizable: true,
+      fromSpot: idl.Spot.LeftRightSides,
+      toSpot: idl.Spot.LeftRightSides
+    })
+      .add(
+        new idl.Shape("RoundedRectangle", {
+          fill: ENTITY_BG, stroke: ENTITY_BORDER, strokeWidth: 3, parameter1: 6
+        }),
+        new idl.Panel("Table", {
+          margin: 8,
+          defaultRowSeparatorStroke: "#E8F1FF",
+          defaultColumnSeparatorStroke: ""
+        })
+          .add(
+            new idl.TextBlock("Order Details", {
+              row: 0, column: 0, columnSpan: 2,
+              font: "bold 15px sans-serif", stroke: "white",
+              background: HEADER_BG, padding: 6, textAlign: "center",
+              stretch: idl.GraphObject.Fill
+            }),
+            new idl.TextBlock("Atributos", {
+              row: 1, column: 0, columnSpan: 2,
+              font: "bold 12px sans-serif", stroke: "#666", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 2, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("OrderID", {
+              row: 2, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Circle", {
+              row: 3, column: 0, width: 14, height: 14,
+              fill: NUM_COLOR, stroke: NUM_COLOR, margin: 4
+            }),
+            new idl.TextBlock("UnitPrice", {
+              row: 3, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Circle", {
+              row: 4, column: 0, width: 14, height: 14,
+              fill: NUM_COLOR, stroke: NUM_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Quantity", {
+              row: 4, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.Shape("Circle", {
+              row: 5, column: 0, width: 14, height: 14,
+              fill: NUM_COLOR, stroke: NUM_COLOR, margin: 4
+            }),
+            new idl.TextBlock("Discount", {
+              row: 5, column: 1, font: "12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            }),
+            new idl.TextBlock("Claves Foráneas", {
+              row: 6, column: 0, columnSpan: 2,
+              font: "bold 11px sans-serif", stroke: "#999", padding: 3,
+              background: "#F0F4F8"
+            }),
+            new idl.Shape("Diamond", {
+              row: 7, column: 0, width: 14, height: 14,
+              fill: KEY_COLOR, stroke: KEY_COLOR, margin: 4
+            }),
+            new idl.TextBlock("ProductID", {
+              row: 7, column: 1, font: "italic 12px sans-serif",
+              stroke: "#333", margin: 2, alignment: idl.Spot.Left
+            })
+          )
+      )
+  );
+
+  // ── Link template with cardinality labels ──
+  diagram.linkTemplate = new idl.Link({
+    routing: idl.Link.Normal,
+    curve: idl.Link.Bezier,
+    corner: 10
+  })
+    .add(new idl.Shape({ stroke: "#9CA3AF", strokeWidth: 1.5 }));
+
+  // ── Layout ──
+  diagram.layout = new idl.ForceDirectedLayout({
+    defaultSpringLength: 220,
+    defaultElectricalCharge: 400,
+    maxIterations: 200
+  });
+
+  // ── Model ──
+  diagram.model = new idl.GraphLinksModel({
+    nodeDataArray: [
+      { key: 1, category: "Products" },
+      { key: 2, category: "Suppliers" },
+      { key: 3, category: "Categories" },
+      { key: 4, category: "OrderDetails" },
+    ],
+    linkDataArray: [
+      { from: 1, to: 2, text: "0..N", toText: "1" },
+      { from: 1, to: 3, text: "0..N", toText: "1" },
+      { from: 4, to: 1, text: "0..N", toText: "1" },
+      { from: 3, to: 2, text: "0..N", toText: "1" },
+    ]
+  });
+</script>
+</body>
+</html>
